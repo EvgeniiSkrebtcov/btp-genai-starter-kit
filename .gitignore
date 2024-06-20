@@ -18,3 +18,4 @@ __pycache__/
 build
 *.egg-info
 gen
+**/example05/data/**

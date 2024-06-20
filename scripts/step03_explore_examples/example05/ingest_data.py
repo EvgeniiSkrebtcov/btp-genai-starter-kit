@@ -15,25 +15,21 @@ initLogger()
 def main():
     # Load environment variables
     load_dotenv(dotenv_path=str(FILE_ENV), verbose=True)
-
-    input_path = os.getcwd()
-    print(input_path)
-    output_path = os.path.join(os.getcwd(), "output")
-
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Get elements
     raw_pdf_elements = partition_pdf(
-        filename=os.path.join(script_dir, "TDS LOCTITE HY 4090-EN.pdf"),
+        filename=os.path.join(script_dir, "data/input.pdf"),
         extract_images_in_pdf=True,
         infer_table_structure=True,
         chunking_strategy="by_title",
         max_characters=4000,
         new_after_n_chars=3800,
         combine_text_under_n_chars=2000,
-        image_output_dir_path=output_path,
+        extract_image_block_output_dir=os.path.join(script_dir, "data/output"),
     )
 
+    print(raw_pdf_elements)
     # # Get the proxy client for the AI Core service
     # proxy_client = get_proxy_client("gen-ai-hub")
     # # Create the OpenAIEmbeddings object
