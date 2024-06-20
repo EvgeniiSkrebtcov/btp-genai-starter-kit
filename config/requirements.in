@@ -13,3 +13,5 @@ wikipedia
 python-dateutil
 python-dotenv
 requests
+unstructured
+pytesseract

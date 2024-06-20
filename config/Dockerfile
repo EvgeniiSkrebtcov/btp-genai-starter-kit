@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y gnupg software-properties-common jq\
     && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
     && apt-get update \
     && apt-get install terraform
+    && apt-get install tesseract-ocr
+    && apt-get install poppler-utils
 # Install all python packages
 RUN    pip install --upgrade pip \ 
     && pip install --no-cache-dir -r $TEMPFOLDER/requirements.txt
