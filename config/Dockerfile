@@ -19,11 +19,12 @@ RUN apt-get update && apt-get install -y gnupg software-properties-common jq\
     && gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint \
     && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
     && apt-get update \
-    && apt-get install terraform
-    && apt-get install tesseract-ocr
-    && apt-get install poppler-utils
+    && apt-get install terraform \
+    && apt-get install tesseract-ocr -y \
+    && apt-get install poppler-utils -y
+# tesseract-ocr poppler-utils
 # Install all python packages
-RUN    pip install --upgrade pip \ 
+RUN    pip install --upgrade pip \
     && pip install --no-cache-dir -r $TEMPFOLDER/requirements.txt
 # xdg-utils is intalled to use the SSO option of the terraform provider for SAP BTP
 RUN apt-get install -y xdg-utils
