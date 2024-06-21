@@ -20,6 +20,8 @@ aiosignal==1.3.1
     # via aiohttp
 annotated-types==0.7.0
     # via pydantic
+antlr4-python3-runtime==4.9.3
+    # via omegaconf
 anyio==4.4.0
     # via
     #   httpx
@@ -41,10 +43,13 @@ certifi==2024.6.2
     #   httpx
     #   requests
     #   unstructured-client
+cffi==1.16.0
+    # via cryptography
 chardet==5.2.0
     # via unstructured
 charset-normalizer==3.3.2
     # via
+    #   pdfminer-six
     #   requests
     #   unstructured-client
 click==8.1.7
@@ -52,6 +57,14 @@ click==8.1.7
     #   ai-core-sdk
     #   generative-ai-hub-sdk
     #   nltk
+coloredlogs==15.0.1
+    # via onnxruntime
+contourpy==1.2.1
+    # via matplotlib
+cryptography==42.0.8
+    # via pdfminer-six
+cycler==0.12.1
+    # via matplotlib
 dataclasses-json==0.6.7
     # via
     #   langchain-community
@@ -65,24 +78,38 @@ deprecated==1.2.14
     # via
     #   llama-index-core
     #   llama-index-legacy
+    #   pikepdf
 dirtyjson==1.0.8
     # via
     #   llama-index-core
     #   llama-index-legacy
 distro==1.9.0
     # via openai
+effdet==0.4.1
+    # via unstructured
 emoji==2.12.1
     # via unstructured
+filelock==3.15.3
+    # via
+    #   huggingface-hub
+    #   torch
+    #   transformers
 filetype==1.2.0
     # via unstructured
+flatbuffers==24.3.25
+    # via onnxruntime
+fonttools==4.53.0
+    # via matplotlib
 frozenlist==1.4.1
     # via
     #   aiohttp
     #   aiosignal
 fsspec==2024.6.0
     # via
+    #   huggingface-hub
     #   llama-index-core
     #   llama-index-legacy
+    #   torch
 generative-ai-hub-sdk==1.8.0
     # via -r requirements.in
 gitdb==4.0.11
@@ -95,6 +122,7 @@ google-api-core[grpc]==2.19.0
     # via
     #   google-ai-generativelanguage
     #   google-api-python-client
+    #   google-cloud-vision
     #   google-generativeai
 google-api-python-client==2.133.0
     # via google-generativeai
@@ -104,9 +132,12 @@ google-auth==2.30.0
     #   google-api-core
     #   google-api-python-client
     #   google-auth-httplib2
+    #   google-cloud-vision
     #   google-generativeai
 google-auth-httplib2==0.2.0
     # via google-api-python-client
+google-cloud-vision==3.7.2
+    # via unstructured
 google-generativeai==0.5.4
     # via langchain-google-genai
 googleapis-common-protos==1.63.1
@@ -140,6 +171,14 @@ httpx==0.27.0
     #   llamaindex-py-client
     #   openai
     #   unstructured-client
+huggingface-hub==0.23.4
+    # via
+    #   timm
+    #   tokenizers
+    #   transformers
+    #   unstructured-inference
+humanfriendly==10.0
+    # via coloredlogs
 idna==3.7
     # via
     #   anyio
@@ -147,6 +186,10 @@ idna==3.7
     #   requests
     #   unstructured-client
     #   yarl
+iopath==0.1.10
+    # via layoutparser
+jinja2==3.1.4
+    # via torch
 joblib==1.4.2
     # via nltk
 jsonpatch==1.33
@@ -155,6 +198,8 @@ jsonpath-python==1.0.6
     # via unstructured-client
 jsonpointer==3.0.0
     # via jsonpatch
+kiwisolver==1.4.5
+    # via matplotlib
 langchain==0.2.3
     # via
     #   -r requirements.in
@@ -181,6 +226,8 @@ langsmith==0.1.77
     #   langchain
     #   langchain-community
     #   langchain-core
+layoutparser==0.3.4
+    # via unstructured-inference
 llama-index==0.10.45
     # via -r requirements.in
 llama-index-agent-openai==0.2.7
@@ -238,11 +285,21 @@ llamaindex-py-client==0.1.19
     #   llama-index-core
     #   llama-index-indices-managed-llama-cloud
 lxml==5.2.2
-    # via unstructured
+    # via
+    #   pikepdf
+    #   unstructured
+markupsafe==2.1.5
+    # via jinja2
 marshmallow==3.21.3
     # via
     #   dataclasses-json
     #   unstructured-client
+matplotlib==3.9.0
+    # via
+    #   pycocotools
+    #   unstructured-inference
+mpmath==1.3.0
+    # via sympy
 multidict==6.0.5
     # via
     #   aiohttp
@@ -260,6 +317,7 @@ networkx==3.3
     # via
     #   llama-index-core
     #   llama-index-legacy
+    #   torch
 nltk==3.8.1
     # via
     #   llama-index-core
@@ -267,12 +325,30 @@ nltk==3.8.1
     #   unstructured
 numpy==1.26.4
     # via
+    #   contourpy
     #   langchain
     #   langchain-community
+    #   layoutparser
     #   llama-index-core
     #   llama-index-legacy
+    #   matplotlib
+    #   onnx
+    #   onnxruntime
+    #   opencv-python
     #   pandas
+    #   pycocotools
+    #   scipy
+    #   torchvision
+    #   transformers
     #   unstructured
+omegaconf==2.3.0
+    # via effdet
+onnx==1.16.1
+    # via
+    #   unstructured
+    #   unstructured-inference
+onnxruntime==1.18.0
+    # via unstructured-inference
 openai==1.33.0
     # via
     #   generative-ai-hub-sdk
@@ -280,6 +356,10 @@ openai==1.33.0
     #   llama-index-agent-openai
     #   llama-index-core
     #   llama-index-legacy
+opencv-python==4.10.0.84
+    # via
+    #   layoutparser
+    #   unstructured-inference
 ordered-set==4.1.0
     # via deepdiff
 orjson==3.10.4
@@ -288,29 +368,66 @@ overloading==0.5.0
     # via generative-ai-hub-sdk
 packaging==23.2
     # via
+    #   huggingface-hub
     #   langchain-core
     #   marshmallow
+    #   matplotlib
+    #   onnxruntime
+    #   pikepdf
     #   pytesseract
+    #   transformers
     #   unstructured-client
+    #   unstructured-pytesseract
 pandas==2.2.2
     # via
+    #   layoutparser
     #   llama-index-core
     #   llama-index-legacy
+pdf2image==1.17.0
+    # via
+    #   layoutparser
+    #   unstructured
+pdfminer==20191125
+    # via -r requirements.in
+pdfminer-six==20231228
+    # via
+    #   pdfplumber
+    #   unstructured
+pdfplumber==0.11.1
+    # via layoutparser
+pikepdf==9.0.0
+    # via unstructured
 pillow==10.3.0
     # via
+    #   layoutparser
     #   llama-index-core
+    #   matplotlib
+    #   pdf2image
+    #   pdfplumber
+    #   pikepdf
+    #   pillow-heif
     #   pytesseract
+    #   torchvision
+    #   unstructured-pytesseract
+pillow-heif==0.16.0
+    # via unstructured
+portalocker==2.8.2
+    # via iopath
 proto-plus==1.23.0
     # via
     #   google-ai-generativelanguage
     #   google-api-core
+    #   google-cloud-vision
 protobuf==4.25.3
     # via
     #   google-ai-generativelanguage
     #   google-api-core
+    #   google-cloud-vision
     #   google-generativeai
     #   googleapis-common-protos
     #   grpcio-status
+    #   onnx
+    #   onnxruntime
     #   proto-plus
 pyasn1==0.6.0
     # via
@@ -318,6 +435,12 @@ pyasn1==0.6.0
     #   rsa
 pyasn1-modules==0.4.0
     # via google-auth
+pycocotools==2.0.8
+    # via effdet
+pycparser==2.22
+    # via cffi
+pycryptodome==3.20.0
+    # via pdfminer
 pydantic==2.7.4
     # via
     #   generative-ai-hub-sdk
@@ -332,16 +455,24 @@ pydantic-core==2.18.4
 pyhumps==3.8.0
     # via ai-api-client-sdk
 pyparsing==3.1.2
-    # via httplib2
+    # via
+    #   httplib2
+    #   matplotlib
 pypdf==4.2.0
     # via
     #   llama-index-readers-file
+    #   unstructured
     #   unstructured-client
+pypdfium2==4.30.0
+    # via pdfplumber
 pytesseract==0.3.10
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   unstructured
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.in
+    #   matplotlib
     #   pandas
     #   unstructured-client
 python-dotenv==1.0.1
@@ -350,25 +481,36 @@ python-iso639==2024.4.27
     # via unstructured
 python-magic==0.4.27
     # via unstructured
+python-multipart==0.0.9
+    # via unstructured-inference
 pytz==2024.1
     # via pandas
 pyyaml==6.0.1
     # via
+    #   huggingface-hub
     #   langchain
     #   langchain-community
     #   langchain-core
+    #   layoutparser
     #   llama-index-core
+    #   omegaconf
+    #   timm
+    #   transformers
 rapidfuzz==3.9.3
-    # via unstructured
+    # via
+    #   unstructured
+    #   unstructured-inference
 regex==2024.5.15
     # via
     #   nltk
     #   tiktoken
+    #   transformers
 requests==2.32.3
     # via
     #   -r requirements.in
     #   ai-api-client-sdk
     #   google-api-core
+    #   huggingface-hub
     #   langchain
     #   langchain-community
     #   langsmith
@@ -376,6 +518,7 @@ requests==2.32.3
     #   llama-index-legacy
     #   requests-toolbelt
     #   tiktoken
+    #   transformers
     #   unstructured
     #   unstructured-client
     #   wikipedia
@@ -383,6 +526,12 @@ requests-toolbelt==1.0.0
     # via unstructured-client
 rsa==4.9
     # via google-auth
+safetensors==0.4.3
+    # via
+    #   timm
+    #   transformers
+scipy==1.13.1
+    # via layoutparser
 six==1.16.0
     # via
     #   langdetect
@@ -409,6 +558,10 @@ sqlalchemy-hana==2.1.0
     # via -r requirements.in
 striprtf==0.0.26
     # via llama-index-readers-file
+sympy==1.12.1
+    # via
+    #   onnxruntime
+    #   torch
 tabulate==0.9.0
     # via unstructured
 tenacity==8.3.0
@@ -423,23 +576,47 @@ tiktoken==0.7.0
     #   langchain-openai
     #   llama-index-core
     #   llama-index-legacy
+timm==1.0.7
+    # via
+    #   effdet
+    #   unstructured-inference
+tokenizers==0.19.1
+    # via transformers
+torch==2.2.2
+    # via
+    #   effdet
+    #   timm
+    #   torchvision
+    #   unstructured-inference
+torchvision==0.17.2
+    # via
+    #   effdet
+    #   timm
 tqdm==4.66.4
     # via
     #   google-generativeai
+    #   huggingface-hub
+    #   iopath
     #   llama-index-core
     #   nltk
     #   openai
+    #   transformers
     #   unstructured
+transformers==4.41.2
+    # via unstructured-inference
 typing-extensions==4.12.2
     # via
     #   emoji
     #   google-generativeai
+    #   huggingface-hub
+    #   iopath
     #   llama-index-core
     #   llama-index-legacy
     #   openai
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
+    #   torch
     #   typing-inspect
     #   unstructured
     #   unstructured-client
@@ -451,9 +628,13 @@ typing-inspect==0.9.0
     #   unstructured-client
 tzdata==2024.1
     # via pandas
-unstructured==0.14.6
+unstructured[pdf]==0.14.6
     # via -r requirements.in
 unstructured-client==0.23.7
+    # via unstructured
+unstructured-inference==0.7.35
+    # via unstructured
+unstructured-pytesseract==0.3.12
     # via unstructured
 uritemplate==4.1.1
     # via google-api-python-client

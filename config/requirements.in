@@ -16,3 +16,4 @@ requests
 unstructured
 unstructured[pdf]
 pytesseract
+pdfminer
