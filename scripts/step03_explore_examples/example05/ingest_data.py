@@ -90,8 +90,12 @@ def main():
     # Get elements
     raw_pdf_elements = partition_pdf(
         filename=input_path,
+        # Using pdf format to find embedded image blocks
         extract_images_in_pdf=True,
+        # Use layout model (YOLOX) to get bounding boxes (for tables) and find titles
+        # Titles are any sub-section of the document
         infer_table_structure=True,
+        # Post processing to aggregate text once we have the title
         chunking_strategy="by_title",
         max_characters=4000,
         new_after_n_chars=3800,
@@ -136,7 +140,10 @@ def main():
         summary = summarize_image(chain_gpt_4_vision, ie)
         image_summaries.append(summary)
         print(f"{i + 1}th element of images processed.")
-        print(summary)
+
+    print(f"Example Text Summary: {text_summaries[0]}")
+    print(f"Example Table Summary: {table_summaries[0]}")
+    print(f"Example Image Summary: {image_summaries[0]}")
 
     # Initialize the vector store and storage layer
     connection_to_hana = get_connection_to_hana_db()
@@ -150,7 +157,7 @@ def main():
     id_key = "doc_id"
     # Initialize the retriever
     retriever = MultiVectorRetriever(
-        vectorstore=vectorstore, docstore=store, id_key=id_key
+        vectorstore=vectorstore, docstore=store, id_key=id_key, search_kwargs={"k": 10}
     )
 
     # Function to add documents to the retriever
@@ -171,7 +178,7 @@ def main():
 
     # Add image summaries
     add_documents_to_retriever(
-        image_summaries, image_elements
+        image_summaries, image_summaries
     )  # hopefully real images soon
 
     # -------------------------------------------------------------------------------------
@@ -200,7 +207,10 @@ def main():
     prompt = ChatPromptTemplate.from_template(template)
 
     chain = (
-        {"context": retriever, "question": RunnablePassthrough()}
+        {
+            "context": retriever,
+            "question": RunnablePassthrough(),
+        }
         | prompt
         | chain_gpt_4_vision
         | StrOutputParser()
