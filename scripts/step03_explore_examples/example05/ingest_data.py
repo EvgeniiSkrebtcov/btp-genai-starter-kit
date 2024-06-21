@@ -1,6 +1,8 @@
 import os
+import io
 import base64
 import logging
+import requests
 
 from library.util.logging import initLogger
 from library.constants.folders import FILE_ENV
@@ -26,10 +28,18 @@ log = logging.getLogger(__name__)
 initLogger()
 
 
-""" def load_pdf_from_url(url):
+def load_pdf_from_url(url):
     # Download the PDF file
     response = requests.get(url)
-    pdf_file = io.BytesIO(response.content) """
+    pdf_file = io.BytesIO(response.content)
+    script_dir = get_script_dir()
+
+    # Save the PDF file to the data folder
+    pdf_file_path = os.path.join(script_dir, "data/input.pdf")
+    with open(pdf_file_path, "wb") as file:
+        file.write(response.content)
+
+    return pdf_file
 
 
 def encode_image(image_path):
@@ -69,12 +79,16 @@ def summarize_image(llm_with_vision, encoded_image):
     return response.content
 
 
+def get_script_dir():
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 # This function loads the documents into the HANA DB to get them vectorized and validates the documents are loaded correctly
 def main():
     # Load environment variables
     load_dotenv(dotenv_path=str(FILE_ENV), verbose=True)
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = get_script_dir()
     input_path = os.path.join(script_dir, "data/input.pdf")
     output_path = os.path.join(script_dir, "data/output")
     text_elements = []
@@ -86,6 +100,9 @@ def main():
     )
 
     embeddings = AzureOpenAIEmbeddings(azure_deployment="text-embedding-3-large")
+
+    # Load the PDF file to ingest
+    load_pdf_from_url("https://datasheets.tdx.henkel.com/LOCTITE-HY-4090GY-en_GL.pdf")
 
     # Get elements
     raw_pdf_elements = partition_pdf(
