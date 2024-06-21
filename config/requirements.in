@@ -5,6 +5,9 @@ langchain
 langchain_community
 langchain_google_genai
 langchain_openai
+llama-index
+llama-index-embeddings-langchain
+PyMuPDF
 #pip-tools
 python-dateutil
 python-dotenv

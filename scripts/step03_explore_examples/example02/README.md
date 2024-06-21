@@ -1,4 +1,5 @@
 # Example: Advanced RAG with SAP BTP Services
+
 This series of examples demonstrates how to use the SAP Business Technology Platform (BTP) services to implement various advanced RAG techniques.
 
 ## Advanced RAG
