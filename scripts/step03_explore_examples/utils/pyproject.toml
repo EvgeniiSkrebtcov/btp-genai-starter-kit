@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "utils"
+version = "0.1.2"
+description = "Utils for exploring examples"
+authors = ["romaniam"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+hdbcli = "^2.21.26"
+langchain = "^0.2.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

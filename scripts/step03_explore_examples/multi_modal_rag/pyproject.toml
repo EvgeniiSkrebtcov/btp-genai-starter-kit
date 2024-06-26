@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "multi_modal_rag"
+version = "0.1.0"
+description = "Multi Modal RAG example"
+authors = ["EvgeniiSkrebtcov"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+requests = "^2.32.3"
+unstructured = {extras = ["pdf"], version = "^0.14.8"}
+pytesseract = "^0.3.10"
+hdbcli = "^2.21.26"
+# local package depencendies
+utils = { path = "../utils", develop = false }
+python-dotenv = "^1.0.1"
+langchain-openai = "^0.1.10"
+langchain = "^0.2.6"
+langchain-community = "^0.2.6"
+pdfminer-six = "^20231228"
+pdfminer = "^20191125"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+main = "multi_modal_rag.main:main"
