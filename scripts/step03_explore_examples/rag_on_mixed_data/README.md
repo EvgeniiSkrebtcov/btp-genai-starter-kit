@@ -1,14 +1,50 @@
 # Example: RAG on SAP BTP with structured and unstructured data
 This example shows how to create a RAG application that uses both **structured** and **unstructured** data for grounding LLM responses.
 
+## Installation
+
+1. Install pyenv and poetry if you haven't already:
+
+```sh
+brew install pyenv
+```
+
+```sh
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+2. Install the desired Python version using pyenv:
+
+```sh
+pyenv install 3.12
+```
+
+3. Create virtual environment
+
+Poetry automatically creates and manages virtual environments. To create one for your project, run:
+
+```sh
+poetry install
+```
+
+This command creates a virtual environment and installs any dependencies specified in your pyproject.toml file.
+
+
+4. Run the script
+
+```sh
+poetry run python main.py
+```
+
 ## 1. Data Ingestion
 We begin with data ingestion.
-This time we use the following data dfor grounding:
+This time we use the following data for grounding:
  - Create table in SAP HANA DB with Information about City, Population and Country it belongs to.
- - Create table with embeddings of the Wikipedia pages that are related to the Cities. This example uses LangChain adapter for HanaDB Vector Engine to load sample documents that will be used for grounding the LLM responses. 
+ - Create table with embeddings of the Wikipedia pages that are related to the Cities. This example uses LangChain adapter for HanaDB Vector Engine to load sample documents that will be used for grounding the LLM responses.
 
-You can proceed with running the script `ingest_data.py`:
-> `python ingest_data.py`
+The ingestion process is running automatically when you start the main file.
+
+> `poetry run python main.py`
 
 ## 2. Retrieval Augmanted Generation
 Then we demonstrate *Retrieval Augmented Generation* app that can use both:
@@ -17,9 +53,6 @@ Then we demonstrate *Retrieval Augmented Generation* app that can use both:
 
 We implement the application as a LangChain `SQL Agent` that uses SQLAlchemy dialect for SAP HANA for constructing the SQL Queries, and equip it with an additional custom RAG Tool for answering detailed questions about Cities.
 The agent Iterates on the question presented by the user and uses REACT pattern choosing which tool to select on every iteration. This ecample requires `gpt-4` model for reliable results.
-
-You can proceed with running the script `rag_on_structured_and_unstructured_data.py`:
-> `python rag_on_structured_and_unstructured_data.py`
 
 **Example questions:**
 - *Can you give me the country corresponding to each city?* - This question corresponds to the structured data and can be answered by constructing and executing an SQL statement to the `city_stats` table in Hana DB.

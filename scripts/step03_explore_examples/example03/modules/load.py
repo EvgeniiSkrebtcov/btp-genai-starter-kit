@@ -16,7 +16,7 @@ def load(src: str) -> str:
         str: The loaded data as a string.
     """
 
-    log.info("Loading data from source: %s", src)
+    log.info(f"Loading data from source: {src}")
 
     if src.startswith("http://") or src.startswith("https://"):
         return fetch_from_url(src)
@@ -69,5 +69,5 @@ def load_from_fs(image_path: str) -> dict:
             image = f.read()
         return base64.b64encode(image).decode("utf-8")
     except Exception as e:
-        log.error("Error loading image from directory: %s", e)
+        log.error(f"Error loading image from directory: {e}")
         raise

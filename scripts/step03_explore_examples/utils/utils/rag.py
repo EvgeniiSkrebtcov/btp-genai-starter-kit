@@ -20,13 +20,17 @@ def split_docs_into_chunks(
         list[list[Document]]: A list of chunks, where each chunk is a list of documents.
 
     """
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        length_function=len,
-        add_start_index=True,
-    )
-    chunks = text_splitter.split_documents(documents)
-    log.info("Split %s documents into %s chunks.", len(documents), len(chunks))
+    try:
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            length_function=len,
+            add_start_index=True,
+        )
+        chunks = text_splitter.split_documents(documents)
+        log.info(f"Split {len(documents)} documents into {len(chunks)} chunks.")
 
-    return chunks
+        return chunks
+    except Exception as e:
+        log.error(f"An error occurred while splitting documents into chunks: {str(e)}")
+        raise

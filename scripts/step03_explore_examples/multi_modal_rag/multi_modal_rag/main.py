@@ -92,7 +92,7 @@ def load_env():
 
 def extract_pdf_data(pdf: io.BytesIO):
     script_dir = get_script_dir(__file__)
-    output_path = (os.path.join(script_dir, "data/output"),)
+    images_output_path = (os.path.join(script_dir, "data/images"),)
 
     text_elements = []
     table_elements = []
@@ -114,7 +114,7 @@ def extract_pdf_data(pdf: io.BytesIO):
             max_characters=6000,
             new_after_n_chars=3800,
             combine_text_under_n_chars=2000,
-            extract_image_block_output_dir=output_path,
+            extract_image_block_output_dir=images_output_path,
         )
 
         log.info("Elements text, tables and images from PDF.")
@@ -128,15 +128,15 @@ def extract_pdf_data(pdf: io.BytesIO):
         table_elements = [i.text for i in table_elements]
         text_elements = [i.text for i in text_elements]
 
-        for image_file in os.listdir(output_path):
+        for image_file in os.listdir(images_output_path):
             if image_file.endswith((".png", ".jpg", ".jpeg")):
-                image_path = os.path.join(output_path, image_file)
+                image_path = os.path.join(images_output_path, image_file)
                 encoded_image = encode_image(image_path)
                 image_elements.append(encoded_image)
 
-        log.info("Number of Text Elements: %s", len(text_elements))
-        log.info("Number of Table Elements: %s", len(table_elements))
-        log.info("Number of Images: %s", len(image_elements))
+        log.info(f"Number of Text Elements: {len(text_elements)}")
+        log.info(f"Number of Table Elements: {len(table_elements)}")
+        log.info(f"Number of Images: {len(image_elements)}")
 
         return text_elements, table_elements, image_elements
 
@@ -153,22 +153,28 @@ def create_summaries(model, table_elements, text_elements, image_elements):
     for i, te in enumerate(table_elements):
         summary = summarize_table(model, te)
         table_summaries.append(summary)
-        log.info("%sth element of tables processed.", {i + 1})
+        log.info(
+            f"{i + 1}th element of tables processed.",
+        )
 
     for i, te in enumerate(text_elements):
         summary = summarize_text(model, te)
         text_summaries.append(summary)
-        log.info("%sth element of text processed.", {i + 1})
+        log.info(
+            f"{i + 1}th element of text processed.",
+        )
 
     for i, ie in enumerate(image_elements):
         summary = summarize_image(model, ie)
         image_summaries.append(summary)
-        log.info("%sth element of image processed.", {i + 1})
+        log.info(
+            f"{i + 1}th element of image processed.",
+        )
 
     log.info("Summmary examples:")
-    log.info("First Text Summary: %s", text_summaries[0])
-    log.info("First Table Summary: %s", table_summaries[0])
-    log.info("First Image Summary: %s", image_summaries[0])
+    log.info(f"First Text Summary: {text_summaries[0]}")
+    log.info(f"First Table Summary: {table_summaries[0]}")
+    log.info(f"First Image Summary: {image_summaries[0]}")
 
     return text_summaries, table_summaries, image_summaries
 
@@ -238,7 +244,7 @@ def create_retriever(
 
         return retriever
     except Exception as e:
-        log.error("Ingesting data failed with:%s", e)
+        log.error(f"Ingesting data failed with: {e}")
         sys.exit()
 
 
