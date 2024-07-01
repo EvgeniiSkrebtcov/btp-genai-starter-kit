@@ -18,17 +18,7 @@ log = getLogger(__name__)
 
 
 def main():
-    # Load environment variables
-    init_env(
-        True,
-        mandatory_env_variables=[
-            "AICORE_AUTH_URL",
-            "AICORE_CLIENT_ID",
-            "AICORE_CLIENT_SECRET",
-            "AICORE_BASE_URL",
-            "AICORE_RESOURCE_GROUP",
-        ],
-    )
+    init_env()
 
     log.header(
         "Welcome to the interactive Q&A session! Type 'exit' to end the session."

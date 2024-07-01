@@ -26,8 +26,18 @@ def _search_env_file(directory):
 
 
 def init_env(
-    from_project_root: bool = False,
-    mandatory_env_variables: list = [],
+    from_project_root: bool = True,
+    mandatory_env_variables: list = [
+        "AICORE_AUTH_URL",
+        "AICORE_CLIENT_ID",
+        "AICORE_CLIENT_SECRET",
+        "AICORE_BASE_URL",
+        "AICORE_RESOURCE_GROUP",
+        "HANA_DB_ADDRESS",
+        "HANA_DB_PORT",
+        "HANA_DB_USER",
+        "HANA_DB_PASSWORD",
+    ],
     verbose: bool = False,
 ):
     """

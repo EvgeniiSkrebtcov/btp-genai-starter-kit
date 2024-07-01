@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "rag-on-mixed-data"
+name = "simple-rag"
 version = "0.1.0"
-description = "Examples showing RAG examples on structured and unstructured data"
+description = "Simple RAG implementation using HANA Cloud Vector Store"
 authors = ["EvgeniiSkrebtcov"]
 readme = "README.md"
 packages = [{ include = "library" }]
@@ -9,15 +9,13 @@ packages = [{ include = "library" }]
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 generative-ai-hub-sdk = "^1.8.0"
+langchain = "^0.2.6"
 langchain-community = "^0.2.6"
 python-dotenv = "^1.0.1"
-langchain = "^0.2.6"
 utils = { path = "../utils", develop = true }
 langchain-google-genai = "^1.0.7"
-langchain-openai = "^0.1.11"
-sqlalchemy = "^2.0.31"
-sqlalchemy-hana = "^2.2.0"
-wikipedia = "^1.4.0"
+langchain-openai = "^0.1.13"
+gitpython = "^3.1.43"
 
 [build-system]
 requires = ["poetry-core"]
