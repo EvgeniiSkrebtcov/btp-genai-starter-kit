@@ -9,6 +9,21 @@ log = getLogger(__name__)
 initLogger()
 
 
+def check_if_exists(table_name, schema_name="DBADMIN"):
+    connection_to_hana = get_connection_to_hana_db()
+    cursor = connection_to_hana.cursor()
+
+    # Check if the table exists
+    check_table_query = """
+    SELECT COUNT(*)
+    FROM TABLES
+    WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?
+    """
+
+    cursor.execute(check_table_query, (schema_name, table_name))
+    return cursor.fetchone()[0] > 0
+
+
 def teardown_hana_table(table_name):
     """
     Drops the specified table in the HANA database.
@@ -22,6 +37,12 @@ def teardown_hana_table(table_name):
     Returns:
         None
     """
+
+    exists = check_if_exists(table_name=table_name)
+    if exists is False:
+        log.success("Nothing to clean up")
+        return
+
     try:
         connection_to_hana = get_connection_to_hana_db()
         cur = connection_to_hana.cursor()
@@ -30,6 +51,7 @@ def teardown_hana_table(table_name):
         cur.close()
         log.success(f"Table {table_name} dropped successfully.")
     except Exception as e:
+        log.error(type(e))
         log.error(f"Error dropping table: {str(e)}")
 
 
@@ -108,7 +130,7 @@ def has_embeddings(table_name, verbose=True):
         rows = cur.fetchone()
         if verbose:
             print(
-                f"Preview of embeddings in table {table_name}: \nText: {rows[0]},\nMetadata:{rows[1]},\nVector: {rows[2][:100]}\n"
+                f"Preview of embeddings in table {table_name}: \n\nText: {rows[0][:300]},\nMetadata:{rows[1][:300]},\nVector: {rows[2][:100]}\n"
             )
 
         cur.close()

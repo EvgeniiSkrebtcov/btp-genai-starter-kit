@@ -20,9 +20,7 @@ log = getLogger(__name__)
 def main():
     init_env()
 
-    log.header(
-        "Welcome to the interactive Q&A session! Type 'exit' to end the session."
-    )
+    print("Welcome to the interactive Q&A session!\n")
 
     def ask():
         while True:
@@ -40,10 +38,10 @@ def main():
             agent_executor.invoke({"input": question})
 
     while True:
-        print("0: Clean up")
+        print("0: Clean up database")
         print("1: Ingest data")
         print("2: Retrieve data")
-        print("3: Exit")
+        print("3: Exit\n")
 
         option = input("Which task would you like to run? ").strip()
 

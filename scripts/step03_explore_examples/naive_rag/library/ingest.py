@@ -52,7 +52,9 @@ def ingest(documents):
         db.add_documents(chunks)
         log.success("Documents added successfully.")
 
-        has_embeddings(cur, TABLE_NAME)
+        has_embeddings(TABLE_NAME, verbose=True)
         log.success("Ingestion completed successfully.")
+
+        cur.close()
     except Exception as e:
         log.error(f"Error occurred during ingestion: {str(e)}")
