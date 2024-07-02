@@ -3,23 +3,7 @@ This example shows how to create a RAG application that uses both **structured**
 
 ## Installation
 
-1. Install pyenv and poetry if you haven't already:
-
-```sh
-brew install pyenv
-```
-
-```sh
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-2. Install the desired Python version using pyenv:
-
-```sh
-pyenv install 3.12
-```
-
-3. Create virtual environment
+1. Create virtual environment
 
 Poetry automatically creates and manages virtual environments. To create one for your project, run:
 
@@ -30,23 +14,24 @@ poetry install
 This command creates a virtual environment and installs any dependencies specified in your pyproject.toml file.
 
 
-4. Run the script
+2. Run the script
 
 ```sh
 poetry run python main.py
 ```
 
-## 1. Data Ingestion
+And select one of the available options
+0. Cleanup HANA DB
+1. Run Data Ingestion
+2. Run Retrieval Augmented Generation
+
+## 1. Run Data Ingestion
 We begin with data ingestion.
 This time we use the following data for grounding:
  - Create table in SAP HANA DB with Information about City, Population and Country it belongs to.
  - Create table with embeddings of the Wikipedia pages that are related to the Cities. This example uses LangChain adapter for HanaDB Vector Engine to load sample documents that will be used for grounding the LLM responses.
 
-The ingestion process is running automatically when you start the main file.
-
-> `poetry run python main.py`
-
-## 2. Retrieval Augmanted Generation
+## 2. Run Retrieval Augmanted Generation
 Then we demonstrate *Retrieval Augmented Generation* app that can use both:
 - Structured data stored in the tables in SAP HANA Cloud.
 - Unstructured data from Wiki via SAP HANA Cloud Vector engine and SAP GenAI Hub.
