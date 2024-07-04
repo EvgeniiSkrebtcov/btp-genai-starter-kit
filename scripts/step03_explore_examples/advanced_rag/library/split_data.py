@@ -1,27 +1,23 @@
 import logging
 
-from dotenv import load_dotenv
 from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
 from gen_ai_hub.proxy.langchain.openai import OpenAIEmbeddings
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import GitLoader
 from langchain_text_splitters import MarkdownHeaderTextSplitter
-from library.constants.folders import FILE_ENV
-from library.util.logging import initLogger
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core.node_parser import SemanticSplitterNodeParser
 from llama_index.embeddings.langchain import LangchainEmbedding
 
+from utils.env import init_env
+
+
 log = logging.getLogger(__name__)
-initLogger()
 
 
 def main():
-    # Load environment variables
-    load_dotenv(dotenv_path=str(FILE_ENV), verbose=True)
-
-    log.header("Compare different splitting strategies")
+    print("Compare different splitting strategies")
 
     # Load the documents from a GitHub repository
     loader = GitLoader(
@@ -34,7 +30,7 @@ def main():
     tf_docs_all = loader.load()
 
     # Recursive splitter
-    log.header("Recursive splitter")
+    print("Recursive splitter")
     recursive_chunks = recursive_split_docs_into_chunks(documents=tf_docs_all)
     print("=" * 10, "RECURSIVE CHUNKS", "=" * 10)
     print(f"Loaded {len(recursive_chunks)} docs")
@@ -42,7 +38,7 @@ def main():
     print("chunk 1: ", recursive_chunks[1].page_content)
 
     # Markdown splitter
-    log.header("Markdown splitter")
+    print("Markdown splitter")
     markdown_chunks = markdown_split_docs_into_chunks(documents=tf_docs_all)
     print("=" * 10, "MARKDOWN CHUNKS", "=" * 10)
     print(f"Loaded {len(markdown_chunks)} docs")
@@ -53,7 +49,7 @@ def main():
     markdown_recursive_chunks = recursive_split_docs_into_chunks(
         documents=markdown_chunks
     )
-    log.header("Markdown and then recursive splitter")
+    print("Markdown and then recursive splitter")
     print("=" * 10, "MARKDOWN RECURSIVE CHUNKS", "=" * 10)
     print(f"Loaded {len(markdown_recursive_chunks)} docs")
     print("chunk 0: ", markdown_recursive_chunks[0].page_content)
@@ -72,7 +68,7 @@ def main():
     docs = reader.load_data()
 
     # Split the first 5 documents into chunks. Calls embedding models to create chunks.
-    log.header("Semantic splitter")
+    print("Semantic splitter")
     semantic_chunks = semantic_split_docs_into_chunks(docs[:10])
     print(f"Loaded {len(semantic_chunks)} docs")
     for i, chunk in enumerate(semantic_chunks[:5]):
@@ -121,6 +117,7 @@ def markdown_split_docs_into_chunks(documents: list[Document]):
 
     return md_header_splits
 
+
 # Split the docs into chunks
 def semantic_split_docs_into_chunks(documents: list[Document]):
     # Get the proxy client for the AI Core service
@@ -143,4 +140,6 @@ def semantic_split_docs_into_chunks(documents: list[Document]):
 
 
 if __name__ == "__main__":
+    # Load environment variables
+    init_env()
     main()

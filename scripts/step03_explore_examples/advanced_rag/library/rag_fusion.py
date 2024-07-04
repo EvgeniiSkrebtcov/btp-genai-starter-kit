@@ -1,27 +1,20 @@
 import logging
 
-from dotenv import load_dotenv
-from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
-from gen_ai_hub.proxy.langchain.openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.load import dumps, loads
-from langchain_community.vectorstores.hanavector import HanaDB
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
-from library.constants.folders import FILE_ENV
-from library.constants.table_names import TABLE_NAME
-from library.data.hana_db import get_connection_to_hana_db
-from library.util.logging import initLogger
+
+from utils.env import init_env
+
+from .config import SAP_DOCS_TABLE_NAME
+from .factory import setup_components
 
 log = logging.getLogger(__name__)
-initLogger()
 
 
 def main():
-    # Load environment variables
-    load_dotenv(dotenv_path=str(FILE_ENV), verbose=True)
-
-    db, llm = initialize_components()
+    llm, _, db = setup_components(SAP_DOCS_TABLE_NAME)
 
     template = """
         Answer the question in detail and as truthfully as possible based only on the provided context. If you're unsure of the question or answer, say "Sorry, I don't know".
@@ -38,43 +31,17 @@ def main():
 
     original_query = "Cloud Foundry, Kyma or what?"
 
-    log.header("Invoke query without RAG Fusion")
-    qaWithoutFusion(llm, original_query, prompt, retriever)
+    print("Invoke query without RAG Fusion")
+    qa_without_fusion(llm, original_query, prompt, retriever)
 
-    log.header("Invoke query with RAG Fusion")
-    qaWithRagFusion(llm, original_query, prompt, retriever)
+    print("Invoke query with RAG Fusion")
+    qa_with_rag_fusion(llm, original_query, prompt, retriever)
 
     log.success("RAG Fusion successfully completed.")
 
 
-# Initialize database and language model components
-def initialize_components():
-    # Get the connection to the HANA DB
-    connection_to_hana = get_connection_to_hana_db()
-    log.info("Connection to HANA DB established")
-
-    # Get the proxy client for the AI Core service
-    proxy_client = get_proxy_client("gen-ai-hub")
-
-    # Create the OpenAIEmbeddings object
-    embeddings = OpenAIEmbeddings(
-        proxy_model_name="text-embedding-ada-002", proxy_client=proxy_client
-    )
-    log.info("OpenAIEmbeddings object created")
-
-    llm = ChatOpenAI(proxy_model_name="gpt-35-turbo", proxy_client=proxy_client)
-    log.info("ChatOpenAI object created")
-
-    # Create the HanaDB object
-    db = HanaDB(
-        embedding=embeddings, connection=connection_to_hana, table_name=TABLE_NAME
-    )
-
-    return db, llm
-
-
 # Question answering without RAG Fusion
-def qaWithoutFusion(llm, original_query, prompt, retriever):
+def qa_without_fusion(llm, original_query, prompt, retriever):
     chain = (
         {"context": retriever, "original_query": RunnablePassthrough()}
         | prompt
@@ -89,7 +56,7 @@ def qaWithoutFusion(llm, original_query, prompt, retriever):
 
 
 # Question answering with RAG Fusion
-def qaWithRagFusion(llm, original_query, original_prompt, retriever):
+def qa_with_rag_fusion(llm, original_query, original_prompt, retriever):
     fusion_prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -101,9 +68,9 @@ def qaWithRagFusion(llm, original_query, original_prompt, retriever):
         ]
     )
 
-    def printAndSplit(generatedQueries: str):
-        print("Generated queries: ", generatedQueries)
-        return generatedQueries.split("\n")
+    def print_and_split(generated_queries: str):
+        print("Generated queries: ", generated_queries)
+        return generated_queries.split("\n")
 
     # Define the pipeline that generates multiple search queries based on a single input query
     chain = (
@@ -113,7 +80,7 @@ def qaWithRagFusion(llm, original_query, original_prompt, retriever):
                 | fusion_prompt
                 | llm
                 | StrOutputParser()
-                | printAndSplit
+                | print_and_split
                 | retriever.map()
                 | reciprocal_rank_fusion
             },
@@ -146,4 +113,6 @@ def reciprocal_rank_fusion(results: list[list], k=60):
 
 
 if __name__ == "__main__":
+    # Load environment variables
+    init_env()
     main()
