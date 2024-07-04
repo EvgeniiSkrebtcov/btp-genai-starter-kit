@@ -20,3 +20,6 @@ build
 gen
 *.DS_Store
 .venv/
+
+# VScode specific files
+.vscode/
