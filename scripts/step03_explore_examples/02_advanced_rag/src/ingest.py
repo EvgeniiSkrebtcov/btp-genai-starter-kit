@@ -6,8 +6,8 @@ from langchain_community.document_loaders import GitLoader
 
 from utils.rag import split_docs_into_chunks
 
-from .factory import setup_components
-from .config import SAP_DOCS_TABLE_NAME, PODCASTS_TABLE_NAME
+from helpers.factory import setup_components
+from helpers.config import SAP_DOCS_TABLE_NAME, PODCASTS_TABLE_NAME
 
 log = logging.getLogger(__name__)
 

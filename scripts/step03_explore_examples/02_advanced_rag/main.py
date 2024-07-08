@@ -4,15 +4,17 @@ import sys
 from utils.env import init_env
 from utils.hana import teardown_hana_table
 
+from helpers.config import (
+    SAP_DOCS_TABLE_NAME,
+    PODCASTS_TABLE_NAME,
+)
 
-from library import (
+from src import (
     ingest_main,
     rag_fusion_main,
     rewrite_retrieve_read_main,
     self_query_main,
     split_data_main,
-    SAP_DOCS_TABLE_NAME,
-    PODCASTS_TABLE_NAME,
 )
 
 log = logging.getLogger(__name__)
@@ -27,11 +29,10 @@ def main():
     # -------------------------------------------------------------------------------------
 
     print("Welcome to the interactive Q&A session\n")
-
     while True:
-        print("0: Clean up database")
-        print("1: Ingest sample data")
-        print("2: Compare Splitter Methods")
+        print("0: Prerequisite - Clean up database")
+        print("1: Prerequisite - Ingest sample data")
+        print("2: Advanced RAG - Compare Splitter Methods")
         print("3: Advanced RAG - Self Query")
         print("4: Advanced RAG - Rewrite Retrieve Read")
         print("5: Advanced RAG - RAG Fusion")

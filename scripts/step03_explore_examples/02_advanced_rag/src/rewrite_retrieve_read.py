@@ -5,8 +5,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from utils.env import init_env
 
-from .factory import setup_components
-from .config import SAP_DOCS_TABLE_NAME
+from helpers.factory import setup_components
+from helpers.config import SAP_DOCS_TABLE_NAME
 
 
 log = logging.getLogger(__name__)

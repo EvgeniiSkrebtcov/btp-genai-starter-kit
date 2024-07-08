@@ -7,8 +7,8 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 
 from utils.env import init_env
 
-from .config import PODCASTS_TABLE_NAME
-from .factory import setup_components
+from helpers.config import PODCASTS_TABLE_NAME
+from helpers.factory import setup_components
 
 log = logging.getLogger(__name__)
 

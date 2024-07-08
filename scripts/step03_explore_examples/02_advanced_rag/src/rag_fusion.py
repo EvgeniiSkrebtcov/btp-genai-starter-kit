@@ -7,8 +7,8 @@ from langchain_core.runnables import RunnablePassthrough
 
 from utils.env import init_env
 
-from .config import SAP_DOCS_TABLE_NAME
-from .factory import setup_components
+from helpers.config import SAP_DOCS_TABLE_NAME
+from helpers.factory import setup_components
 
 log = logging.getLogger(__name__)
 

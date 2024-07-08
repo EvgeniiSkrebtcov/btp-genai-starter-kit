@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Demonstration of different Advanced RAG techniques"
 authors = ["SeriousSem"]
 readme = "README.md"
-packages = [{ include = "library" }]
+packages = [{ include = "src" }, { include = "helpers" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
