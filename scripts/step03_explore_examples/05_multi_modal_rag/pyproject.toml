@@ -14,6 +14,7 @@ pydantic = "^2.8.2"
 generative-ai-hub-sdk = "^1.11.1"
 requests = "^2.32.3"
 langchain-community = "^0.2.7"
+utils = { path = "../utils", develop = true }
 
 
 [build-system]

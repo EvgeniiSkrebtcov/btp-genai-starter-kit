@@ -4,18 +4,13 @@ import base64
 import logging
 import requests
 
-from library.util.logging import initLogger
-from library.constants.folders import FILE_ENV
 from langchain.schema.messages import HumanMessage, AIMessage
 from unstructured.partition.pdf import partition_pdf
-from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from langchain_openai import AzureOpenAIEmbeddings
-from library.data.hana_db import get_connection_to_hana_db
+from utils.hana import get_connection_to_hana_db
 from langchain_community.vectorstores.hanavector import HanaDB
-from library.constants.table_names import (
-    VECTOR_EMBEDDINGS_TABLE_NAME,
-)
+from src.config import EMBEDDINGS_MODEL_NAME, TABLE_NAME
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 from langchain.schema.document import Document
 import uuid
@@ -23,9 +18,9 @@ from langchain.storage import InMemoryStore
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
+from utils.env import init_env
 
 log = logging.getLogger(__name__)
-initLogger()
 
 
 def load_pdf_from_url(url):
@@ -86,7 +81,7 @@ def get_script_dir():
 # This function loads the documents into the HANA DB to get them vectorized and validates the documents are loaded correctly
 def main():
     # Load environment variables
-    load_dotenv(dotenv_path=str(FILE_ENV), verbose=True)
+    init_env()
 
     script_dir = get_script_dir()
     input_path = os.path.join(script_dir, "data/input.pdf")
@@ -101,8 +96,7 @@ def main():
         temperature=0,
     )
 
-    # embeddings = AzureOpenAIEmbeddings(azure_deployment="text-embedding-3-large")
-    embeddings = AzureOpenAIEmbeddings(azure_deployment="text-embedding-ada-002")
+    embeddings = AzureOpenAIEmbeddings(azure_deployment=EMBEDDINGS_MODEL_NAME)
 
     # Load the PDF file to ingest
     load_pdf_from_url("https://datasheets.tdx.henkel.com/LOCTITE-HY-4090GY-en_GL.pdf")
@@ -168,13 +162,13 @@ def main():
     # Initialize the vector store and storage layer
     connection_to_hana = get_connection_to_hana_db()
     cur = connection_to_hana.cursor()
-    cur.execute(f"DROP TABLE {VECTOR_EMBEDDINGS_TABLE_NAME}")
+    cur.execute(f"DROP TABLE {TABLE_NAME}")
     cur.close()
 
     vectorstore = HanaDB(
         embedding=embeddings,
         connection=connection_to_hana,
-        table_name=VECTOR_EMBEDDINGS_TABLE_NAME,
+        table_name=TABLE_NAME,
     )
     # store = LocalFileStore(FOLDER_DOCS_RAG_SOURCES)
     store = InMemoryStore()
