@@ -1,12 +1,14 @@
 import logging
+import os
 from modules.load import load
 from modules.process import (
     Image,
     TabularDataImageProcessor,
     VisualReasoningProcessor,
 )
+
 from modules.ai import AiCore
-import os
+from utils.env import init_env
 
 log = logging.getLogger(__name__)
 
@@ -37,15 +39,19 @@ def load_image(src: str, mime_type: str) -> Image:
         data=image_data,
     )
 
+
 def execute_visual_reasoning_example():
-    image = load_image("images/oil-on-street.jpeg", "image/jpeg")
-    auth_token = AiCore().get_token()
-    image_processor = VisualReasoningProcessor(image=image)
-    output = image_processor.execute(auth_token=auth_token)
-    print(output)
+    try:
+        image = load_image("images/oil-on-street.jpeg", "image/jpeg")
+        image_processor = VisualReasoningProcessor(image=image)
+        output = image_processor.execute()
+        print(output)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
 
 
 def execute_tabular_data_example():
+    init_env()
     image = load_image("images/supplement-ingredients.png", "image/png")
     auth_token = AiCore().get_token()
     image_processor = TabularDataImageProcessor(image=image)

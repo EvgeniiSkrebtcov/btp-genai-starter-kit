@@ -2,8 +2,12 @@ import logging
 import sys
 import os
 from typing import List
-from pydantic import BaseModel
 import requests
+from pydantic import BaseModel
+from langchain_core.messages import HumanMessage
+from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
+from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+from .config import AZURE_LLM, AWS_LLM
 
 log = logging.getLogger(__name__)
 
@@ -28,23 +32,25 @@ class ImageProcessorBase:
     def get_prompt(self) -> str:
         raise NotImplementedError("Method get_prompt must be implemented")
 
-    def execute(self, messages: List[dict], auth_token: str) -> str:
+    def execute_via_sdk(self, messages: List[dict]) -> str:
         try:
-            """
-            Executes the image processing by sending a POST request to the AI Core API.
+            proxy_client = get_proxy_client("gen-ai-hub")
 
-            Args:
-                messages (List[dict]): A list of message dictionaries.
-                auth_token (str): The authentication token for accessing the API.
+            llm = ChatOpenAI(
+                proxy_model_name=AZURE_LLM,
+                proxy_client=proxy_client,
+                temperature=0,
+            )
+            response = llm.invoke(messages)
+            return response.content
+        except Exception as e:
+            log.error(f"Error executing via SDK: {str(e)}")
+            sys.exit()
 
-            Returns:
-                str: The processed image content as text.
-
-            Raises:
-                requests.exceptions.RequestException: If there is an error in the request.
-            """
+    def execute_via_http(self, messages: List[dict], auth_token: str) -> str:
+        try:
             api_base = os.environ.get("AICORE_BASE_URL")
-            deployment_id = os.environ.get("AICORE_DEPLOYMENT")
+            deployment_id = AWS_LLM
             resource_group = os.environ.get("AICORE_RESOURCE_GROUP") or "default"
 
             api_url = f"{api_base}/v2/inference/deployments/{deployment_id}/invoke"
@@ -63,7 +69,9 @@ class ImageProcessorBase:
 
             log.info("Executing image processing...")
 
-            response = requests.post(url=api_url, headers=headers, json=data, timeout=20)
+            response = requests.post(
+                url=api_url, headers=headers, json=data, timeout=20
+            )
 
             response_as_json = response.json()
 
@@ -71,7 +79,7 @@ class ImageProcessorBase:
 
             return response_as_json["content"][0]["text"]
         except requests.exceptions.RequestException as e:
-            log.error("Error processing image: {e}")
+            log.error(f"Error processing image via plain http: {str(e)}")
             sys.exit()
 
 
@@ -110,7 +118,7 @@ class TabularDataImageProcessor(ImageProcessorBase):
             }
         ]
 
-        return super().execute(messages, auth_token)
+        return super().execute_via_http(messages, auth_token)
 
 
 class VisualReasoningProcessor(ImageProcessorBase):
@@ -132,23 +140,21 @@ class VisualReasoningProcessor(ImageProcessorBase):
             Provite the result WITHOUT any additional explanations.
         """
 
-    def execute(self, auth_token: str) -> str:
+    def execute(self) -> str:
         prompt = self.get_prompt()
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            "media_type": self.image.mime_type,
-                            "data": self.image.data,
-                        },
-                    },
-                    {"type": "text", "text": prompt},
-                ],
-            }
-        ]
 
-        return super().execute(messages, auth_token)
+        return super().execute_via_sdk(
+            [
+                HumanMessage(
+                    content=[
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{self.image.data}"
+                            },
+                        },
+                    ]
+                )
+            ]
+        )
