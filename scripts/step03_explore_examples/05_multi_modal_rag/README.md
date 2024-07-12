@@ -11,6 +11,13 @@ The following examples shows how to extract text, tables and images (diagrams) f
 To extract information from the PDF multiple packages are required:
 
 - [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) - for information extraction
+- [Poppler utils](https://poppler.freedesktop.org/) - pdf rendering
+
+In the dev container install he dependencies via
+
+```sh
+apk add --no-cache tesseract-ocr poppler-utils
+```
 
 ## 1. Overview
 
