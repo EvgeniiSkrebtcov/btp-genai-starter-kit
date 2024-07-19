@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Example showing multi modal rag via OCR to extract text tables and images from PDF"
 authors = ["romaniam"]
 readme = "README.md"
+packages = [{ include = "library" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
@@ -17,6 +18,8 @@ langchain-community = "^0.2.7"
 utils = { path = "../utils", develop = true }
 pdfminer = "^20191125"
 langchain-openai = "^0.1.15"
+pdfminer-six = "20221105"
+langchain-google-genai = "^1.0.7"
 
 
 [build-system]

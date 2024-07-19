@@ -1,6 +1,7 @@
 # Example: Multi Modal RAG
 
-The following examples shows how to extract text, tables and images (diagrams) from a given PDF file.
+The following examples shows how to create a RAG system that uses complex PDF documnet (multicolumn text, tables, images) for grounding LLM responses.
+As an axample document we uses the following file:
 
 ## Prerequisites
 
@@ -13,10 +14,10 @@ To extract information from the PDF multiple packages are required:
 - [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) - for information extraction
 - [Poppler utils](https://poppler.freedesktop.org/) - pdf rendering
 
-In the dev container install he dependencies via
+In the dev container install he dependencies via:
 
-```sh
-apk add --no-cache tesseract-ocr poppler-utils
+```bash
+bash install_prerequisites.sh 
 ```
 
 ## 1. Overview
@@ -24,11 +25,16 @@ apk add --no-cache tesseract-ocr poppler-utils
 In the first step tesseract is used to extract information from the PDF. For the tables and images a summary is created. Afterwards embeddings are created for text, images, and tables.
 
 ## 2. How to run
-You can proceed with running the script `semistructured_multimodal_rag.py`:
-> `python semistructured_multimodal_rag.py`
+
+Install dependensies:
+> `poetry install`
+
+You can proceed with running the script:
+> `poetry run python main.py`
 
 **Example questions:**
+- What is the product for?
 - Summarise curation time
 - What are the storage conditions?
-- summarise Chemical/Solvent Resistance
+- Summarise Chemical/Solvent Resistance
 - How to call Henkel Europe?
