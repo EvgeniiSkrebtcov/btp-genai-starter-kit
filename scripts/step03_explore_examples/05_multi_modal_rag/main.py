@@ -8,7 +8,6 @@ from library.config import (
 from utils.env import init_env
 from library import (
     ingest_data_with_unstructured,
-    ingest_with_vision_model,
     create_retriever,
     ask
 )
@@ -40,9 +39,8 @@ def main():
     while True:
         print("0: Clean up database")
         print("1: Ingest data with Unstructured")
-        print("2: Ingest data with Vision Model")
-        print("3: Retrieve data")
-        print("4: Exit\n")
+        print("2: Retrieve data")
+        print("3: Exit\n")
 
         option = input("Which task would you like to run? ").strip()
 
@@ -53,12 +51,9 @@ def main():
             ingest_data_with_unstructured(llm, retriever)
             continue
         elif option == "2":
-            ingest_with_vision_model(llm, retriever)
-            continue
-        elif option == "3":
             ask(llm, retriever)
             break
-        elif option == "4":
+        elif option == "3":
             print("Goodbye!")
             sys.exit()
         else:

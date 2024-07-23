@@ -1,6 +1,5 @@
 from logging import getLogger
 import os
-import io
 import base64
 import requests
 import uuid
@@ -164,6 +163,3 @@ def ingest_data_with_unstructured(llm, retriever):
 
     log.success("Data ingestion completed.")
 
-
-def ingest_with_vision_model(llm, retriever):
-    log.error("Not implemented yet.")

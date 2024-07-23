@@ -16,10 +16,9 @@ generative-ai-hub-sdk = "^1.11.1"
 requests = "^2.32.3"
 langchain-community = "^0.2.7"
 utils = { path = "../utils", develop = true }
-pdfminer = "^20191125"
 langchain-openai = "^0.1.15"
-pdfminer-six = "20221105"
 langchain-google-genai = "^1.0.7"
+pdfminer-six = "20221105"
 
 
 [build-system]
