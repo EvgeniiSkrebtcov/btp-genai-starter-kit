@@ -18,7 +18,7 @@ langchain-openai = "0.1.8"
 llama-index = "^0.10.52"
 llama-index-embeddings-langchain = "^0.1.2"
 gitpython = "^3.1.43"
-pymupdf = "^1.24.7"
+pymupdf = "^1.24.9"
 openai = "1.34.0"
 
 
