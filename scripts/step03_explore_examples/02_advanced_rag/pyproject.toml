@@ -13,7 +13,7 @@ langchain = "^0.2.6"
 langchain-community = "^0.2.6"
 python-dotenv = "^1.0.1"
 utils = { path = "../utils", develop = true }
-langchain-google-genai = "^1.0.7"
+langchain-google-genai = "^1.0.10"
 langchain-openai = "0.1.8"
 llama-index = "^0.10.52"
 llama-index-embeddings-langchain = "^0.1.2"
