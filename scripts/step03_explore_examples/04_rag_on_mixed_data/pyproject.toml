@@ -14,7 +14,7 @@ python-dotenv = "^1.0.1"
 langchain = "^0.2.6"
 utils = { path = "../utils", develop = true }
 langchain-google-genai = "^1.0.7"
-langchain-openai = "^0.1.11"
+langchain-openai = "^0.1.25"
 sqlalchemy = "^2.0.31"
 sqlalchemy-hana = "^2.2.0"
 wikipedia = "^1.4.0"
