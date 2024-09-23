@@ -1,5 +1,16 @@
 # Advanced RAG examples
 
+
+Naive RAG approach covers the basics, but does not address the following:
+
+![image](docs/images/p1.png)
+*Image source: [Retrieval-Augmented Generation for Large Language Models: A Survey](https://arxiv.org/abs/2312.10997v1)
+
+
+Advanced RAG represent a set of techniques to address this limitations.
+
+![image](docs/images/p2.png)
+
 ## Installation
 1. Create virtual environment
 
@@ -51,5 +62,3 @@ We will state ambiguous questions and see how the query rewriting service can he
 In many GenAI cases users are allowed to formulate questions in a free form. That can lead to ambiguity in the question that LLMs can not understand. There are two possible outcomes out of it: LLM will guess the meaning of the query and possibly hallucinate or it will answer something like 'I don't know'. This example shows how to use the SAP BTP services to implement RAG Fusion technique. With RAG Fusion, we generate multiple queries similar to the user query, retrieve relevant documents for all of them and then combine results together using Reciprocal Rank Fusion algorithm. The final list of documents is then used to generate the response.
 
 We use LangChain to generate multiple queries similar to the user query, retrieve relevant documents for all of them and then combine results together using Reciprocal Rank Fusion algorithm. The final list of documents is then used to generate the response. We will also compare results with and without RAG Fusion.
-
-
