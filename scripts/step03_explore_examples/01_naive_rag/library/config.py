@@ -1,3 +1,3 @@
-LLM_MODEL_NAME = "gpt-35-turbo"
-EMBEDDINGS_MODEL_NAME = "text-embedding-ada-002"
+LLM_MODEL_NAME = "gpt-4o"
+EMBEDDINGS_MODEL_NAME = "text-embedding-3-large"
 TABLE_NAME = "TERRAFORM_DOCS"
