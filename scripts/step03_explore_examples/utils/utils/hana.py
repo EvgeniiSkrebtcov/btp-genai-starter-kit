@@ -45,6 +45,7 @@ def teardown_hana_table(table_name):
 
     try:
         connection_to_hana = get_connection_to_hana_db()
+        log.info(f"HANA CONNECTION STRING {connection_to_hana}")
         cur = connection_to_hana.cursor()
         log.info(f"Dropping table {table_name}")
         cur.execute(f"DROP TABLE {table_name}")
@@ -80,8 +81,6 @@ def get_connection_to_hana_db():
             port=os.environ.get("HANA_DB_PORT"),
             user=os.environ.get("HANA_DB_USER"),
             password=os.environ.get("HANA_DB_PASSWORD"),
-            encrypt=True,
-            sslValidateCertificate=False,
         )
         return conn
     except Exception as e:
@@ -110,12 +109,30 @@ def get_connection_string():
             "HANA_DB_PASSWORD",
         ]
     )
-    return "hana+hdbcli://{user}:{password}@{address}:{port}?encrypt=true".format(
-        user=os.environ.get("HANA_DB_USER"),
-        password=os.environ.get("HANA_DB_PASSWORD"),
-        address=os.environ.get("HANA_DB_ADDRESS"),
-        port=os.environ.get("HANA_DB_PORT"),
+    # return "hana+hdbcli://{user}:{password}@{address}:{port}/".format(
+    #     user=os.environ.get("HANA_DB_USER"),
+    #     password=os.environ.get("HANA_DB_PASSWORD"),
+    #     address=os.environ.get("HANA_DB_ADDRESS"),
+    #     port=os.environ.get("HANA_DB_PORT"),
+    # )
+    from sqlalchemy import create_engine
+
+    engine = create_engine(
+        "hana+hdbcli://{user}:{password}@{address}:443".format(
+            user=os.environ.get("HANA_DB_USER"),
+            password=os.environ.get("HANA_DB_PASSWORD"),
+            address=os.environ.get("HANA_DB_ADDRESS"),
+        )
     )
+    print("here!")
+    print(engine.url)
+    with engine.connect() as connection:
+        result = connection.execute("select * from DUMMY")
+        print("here!")
+        for row in result:
+            print("row:", row)
+    print("here at the end!")
+    return engine.url
 
 
 def has_embeddings(table_name, verbose=True):

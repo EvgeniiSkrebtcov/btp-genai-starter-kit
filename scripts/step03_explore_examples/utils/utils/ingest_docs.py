@@ -1,9 +1,7 @@
 from logging import getLogger
-
-from langchain_community.vectorstores.hanavector import HanaDB
+from langchain_hana import HanaDB
 from langchain_community.document_loaders import GitLoader
-from gen_ai_hub.proxy.langchain.openai import OpenAIEmbeddings
-from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+from gen_ai_hub.proxy.langchain.init_models import init_embedding_model
 
 from utils.rag import split_docs_into_chunks
 from utils.hana import (
@@ -11,6 +9,7 @@ from utils.hana import (
 )
 
 log = getLogger(__name__)
+
 
 def fetch_terraform_docs():
     try:
@@ -28,16 +27,14 @@ def fetch_terraform_docs():
     except Exception as e:
         log.error(f"Error occurred while loading documents: {str(e)}")
 
-def ingest_docs(documents, table_name, embeddings_model_name):   
+
+def ingest_docs(documents, table_name, embeddings_model_name):
     try:
         log.info(f"Start ingesting data in {table_name}")
         assert table_name, "Table name is required"
         assert embeddings_model_name, "EMBEDDINGS_MODEL_NAME is required"
         connection_to_hana = get_connection_to_hana_db()
-        proxy_client = get_proxy_client("gen-ai-hub")       
-        embeddings = OpenAIEmbeddings(
-            proxy_model_name=embeddings_model_name, proxy_client=proxy_client
-        )
+        embeddings = init_embedding_model(embeddings_model_name)
         cur = connection_to_hana.cursor()
         chunks = split_docs_into_chunks(documents=documents)
 

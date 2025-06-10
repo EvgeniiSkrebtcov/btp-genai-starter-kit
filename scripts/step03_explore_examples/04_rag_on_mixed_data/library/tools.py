@@ -12,8 +12,8 @@ from typing import Optional
 
 
 class RAGTool(BaseTool):
-    name = "rag_tool"
-    description = """
+    name: str = "rag_tool"
+    description: str = """
         Useful information about Cities from Wikipedia.
         Input: A question about a city.
         Output: The answer to the question."""

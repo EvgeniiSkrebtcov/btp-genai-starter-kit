@@ -1,14 +1,11 @@
 import sys
 from logging import getLogger
 
-from utils.hana import (
-    get_connection_to_hana_db,
-    get_connection_string,
-)
+from utils.hana import get_connection_to_hana_db, get_connection_string
 
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits.sql.base import create_sql_agent
-from langchain_community.vectorstores.hanavector import HanaDB
+from langchain_hana import HanaDB
 from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain.agents.types import AgentType
 
@@ -23,9 +20,9 @@ log = getLogger(__name__)
 
 
 def create_retriever(embeddings):
-    assert (
-        STRUCTURED_DATA_TABLE_NAME
-    ), "STRUCTURED_DATA_TABLE_NAME is not defined. Please define it before proceeding."
+    assert STRUCTURED_DATA_TABLE_NAME, (
+        "STRUCTURED_DATA_TABLE_NAME is not defined. Please define it before proceeding."
+    )
 
     try:
         connection_to_hana = get_connection_to_hana_db()
@@ -44,7 +41,16 @@ def create_retriever(embeddings):
 def create_agent(llm, retriever):
     try:
         rag_tool = RAGTool(llm=llm, retriever=retriever)
-        db = SQLDatabase.from_uri(f"{get_connection_string()}")
+        connection_string = get_connection_string()
+        # print(connection_string)
+        db = SQLDatabase.from_uri(connection_string)
+    except Exception as e:
+        log.error(
+            f"An error occurred while creating the SQLAlchemy db connection: {str(e)}"
+        )
+        sys.exit()
+
+    try:
         agent_executor = create_sql_agent(
             llm=llm,
             toolkit=SQLDatabaseToolkit(db=db, llm=llm),

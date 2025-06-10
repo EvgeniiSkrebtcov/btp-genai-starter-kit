@@ -7,9 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-hdbcli = "^2.21.26"
-langchain = "^0.2.6"
 python-dotenv = "^1.0.1"
+generative-ai-hub-sdk = {extras = ["all"], version = "^4.12.4"}
+hdbcli = "^2.24.26"
 
 
 [build-system]
