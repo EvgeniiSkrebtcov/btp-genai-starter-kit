@@ -5,11 +5,11 @@ from library.process import (
     TabularDataImageProcessor,
     VisualReasoningProcessor,
 )
+from library.config import LLM_MODEL_NAME
+
 from utils.env import init_env
 import os
-from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
-from gen_ai_hub.proxy.langchain.amazon import ChatBedrock
-from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+from gen_ai_hub.proxy.langchain.init_models import init_llm
 
 log = logging.getLogger(__name__)
 
@@ -40,28 +40,23 @@ def load_image(src: str, mime_type: str) -> Image:
         data=image_data,
     )
 
+
 def execute_visual_reasoning_example():
     image = load_image("images/oil-on-street.jpeg", "image/jpeg")
-    proxy_client = get_proxy_client("gen-ai-hub")
-    llm_with_vision = ChatOpenAI(
-        proxy_model_name="gpt-4o",
-        proxy_client=proxy_client,
-        temperature=0,
+    llm_with_vision = init_llm(LLM_MODEL_NAME)
+    image_processor = VisualReasoningProcessor(
+        image=image, llm_with_vision=llm_with_vision
     )
-    image_processor = VisualReasoningProcessor(image=image, llm_with_vision=llm_with_vision)
     output = image_processor.execute()
     print(output)
 
 
 def execute_tabular_data_example():
     image = load_image("images/supplement-ingredients.png", "image/png")
-    proxy_client = get_proxy_client("gen-ai-hub")
-    llm_with_vision = ChatBedrock(
-        model_name="anthropic--claude-3-sonnet",
-        proxy_client=proxy_client,
-        temperature=0,
+    llm_with_vision = init_llm(LLM_MODEL_NAME)
+    image_processor = TabularDataImageProcessor(
+        image=image, llm_with_vision=llm_with_vision
     )
-    image_processor = TabularDataImageProcessor(image=image, llm_with_vision=llm_with_vision)
     output = image_processor.execute()
     print(output)
 
@@ -82,19 +77,19 @@ def main():
         print("\n")
 
     while True:
-            print_header()
-            option = input("Which example would you like to run? ").strip()
+        print_header()
+        option = input("Which example would you like to run? ").strip()
 
-            if option == "1":
-                execute_visual_reasoning_example()
-                continue
-            elif option == "2":
-                execute_tabular_data_example()
-                continue
-            elif option == "3":
-                break
-            else:
-                print("Invalid input. Please enter a number between 1 and ")
+        if option == "1":
+            execute_visual_reasoning_example()
+            continue
+        elif option == "2":
+            execute_tabular_data_example()
+            continue
+        elif option == "3":
+            break
+        else:
+            print("Invalid input. Please enter a number between 1 and ")
 
 
 if __name__ == "__main__":
