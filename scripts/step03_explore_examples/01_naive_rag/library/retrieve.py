@@ -1,6 +1,5 @@
 import logging
-
-from langchain_community.vectorstores.hanavector import HanaDB
+from langchain_hana import HanaDB
 from langchain.chains import ConversationalRetrievalChain
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
@@ -27,7 +26,7 @@ def create_retriever():
     # -------------------------------------------------------------------------------------
 
     # Create a retriever instance of the vector store
-    retriever = db.as_retriever(search_kwargs={"k": 2})
+    retriever = db.as_retriever(search_kwargs={"k": 5})
     # Create prompt template
     prompt_template = """
     You are a helpful assistant. You are provided multiple context items that are related to the prompt you have to answer.

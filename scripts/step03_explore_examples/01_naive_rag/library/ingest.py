@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from langchain_community.vectorstores.hanavector import HanaDB
+from langchain_hana import HanaDB
 from langchain_community.document_loaders import GitLoader
 
 from utils.rag import split_docs_into_chunks
