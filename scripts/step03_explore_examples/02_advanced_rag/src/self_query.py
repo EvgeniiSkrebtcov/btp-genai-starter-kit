@@ -1,10 +1,7 @@
 import logging
-from typing import Optional
-
+from pydantic import BaseModel, Field
 from langchain.chains import RetrievalQA
 from langchain_core.prompts import PromptTemplate
-from langchain_core.pydantic_v1 import BaseModel, Field
-
 
 from helpers.config import PODCASTS_TABLE_NAME
 from helpers.factory import setup_components
@@ -20,14 +17,15 @@ def execute_self_query():
     log.success("""Self querying completed successfully!
                 Now lets try to ask 'What is the summary of the episode 67?' and see how self-querying helps to avoid hallucination.
                 """)
-    
+
     question = "What is the summary of the episode 67?"
     self_query(db, llm, question)
 
     log.success("""Self querying completed successfully!
                 Compare list of used documents for both questions and see how self-querying helps to avoid hallucination by filtering out irrelevant documents.
                 """)
-    
+
+
 def self_query(db, llm, question):
     print("Question: ", question)
     print("Without database filtering based on user query")
@@ -35,6 +33,7 @@ def self_query(db, llm, question):
 
     print("With database filtering based on user query")
     podcast = extract_podcast_title_from_question(llm, question)
+    print("Podcast: ", podcast)
 
     advanced_db_filter = {"title": {"$like": f"%{podcast.title()}%"}}
     qa_documents_with_filters(db, llm, question, advanced_db_filter)
@@ -43,24 +42,12 @@ def self_query(db, llm, question):
 # Extract the podcast title from the questionp
 def extract_podcast_title_from_question(llm, question):
     class Podcast(BaseModel):
-        title: Optional[str] = Field(
-            default=None, description="The title or the episode number of the podcast"
-        )
+        """Determine podcast episode"""
 
-    # Define the prompt to extract data from user query
-    system_template = """
-    You are an expert extraction algorithm.
-    Only extract relevant information from the question below.
-    If you do not know the value of an attribute asked to extract,
-    return null for the attribute's value.
+        title: str = Field(description="Episode number of the podcast")
 
-    Text: {question}
-    """
-
-    prompt = PromptTemplate(template=system_template, input_variables=["question"])
-
-    runnable = prompt | llm.with_structured_output(schema=Podcast)
-    podcast = runnable.invoke({"question": question})
+    structured_llm = llm.with_structured_output(Podcast)
+    podcast = structured_llm.invoke(question)
     print("Podcast Title:", podcast.title)
     return podcast.title
 

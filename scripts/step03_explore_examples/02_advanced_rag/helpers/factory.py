@@ -1,11 +1,9 @@
 import logging
 import sys
-from os import environ
 
-from langchain_community.vectorstores.hanavector import HanaDB
-from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
-from gen_ai_hub.proxy.langchain.openai import OpenAIEmbeddings
-from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+from langchain_hana import HanaDB
+from gen_ai_hub.proxy.langchain.init_models import init_llm
+from gen_ai_hub.proxy.langchain.init_models import init_embedding_model
 
 from utils.hana import get_connection_to_hana_db
 
@@ -25,17 +23,9 @@ def setup_components(table_name, model_name=None, embeddings_model_name=None):
 
         connection = get_connection_to_hana_db()
 
-        # Get the proxy client for the AI Core service
-        proxy_client = get_proxy_client("gen-ai-hub")
+        llm = init_llm(LLM_MODEL_NAME, temperature=0)
 
-        llm = ChatOpenAI(
-            proxy_model_name=LLM_MODEL_NAME, proxy_client=proxy_client, temperature=0
-        )
-
-        embeddings = OpenAIEmbeddings(
-            proxy_model_name=EMBEDDINGS_MODEL_NAME, proxy_client=proxy_client
-        )
-
+        embeddings = init_embedding_model(EMBEDDINGS_MODEL_NAME)
 
         db = HanaDB(embedding=embeddings, connection=connection, table_name=table_name)
 

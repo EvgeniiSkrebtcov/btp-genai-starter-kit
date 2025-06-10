@@ -1,15 +1,11 @@
 import logging
 
-from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
-from gen_ai_hub.proxy.langchain.openai import OpenAIEmbeddings
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import GitLoader
 from langchain_text_splitters import MarkdownHeaderTextSplitter
-from llama_index.core import SimpleDirectoryReader
-from llama_index.core.node_parser import SemanticSplitterNodeParser
-from llama_index.embeddings.langchain import LangchainEmbedding
-
+from langchain_experimental.text_splitter import SemanticChunker
+from helpers.factory import setup_components
 
 log = logging.getLogger(__name__)
 
@@ -54,23 +50,11 @@ def execute_split_data():
     print("chunk 1: ", markdown_recursive_chunks[1].page_content)
 
     # Semantic splitter
-    # load documents with llama_index
-    required_exts = [".md"]
-
-    reader = SimpleDirectoryReader(
-        input_dir="./gen/docs/",
-        required_exts=required_exts,
-        recursive=True,
-    )
-
-    docs = reader.load_data()
-
-    # Split the first 5 documents into chunks. Calls embedding models to create chunks.
-    print("Semantic splitter")
-    semantic_chunks = semantic_split_docs_into_chunks(docs[:10])
-    print(f"Loaded {len(semantic_chunks)} docs")
-    for i, chunk in enumerate(semantic_chunks[:5]):
-        print(f"chunk {i}: {chunk.text}")
+    semantic_splitter_chunks = semantic_split_docs_into_chunks(documents=tf_docs_all)
+    print("=" * 10, "SEMANTIC SPLITTER CHUNKS", "=" * 10)
+    print(f"Loaded {len(semantic_splitter_chunks)} docs")
+    print("chunk 0: ", semantic_splitter_chunks[0].page_content)
+    print("chunk 1: ", semantic_splitter_chunks[1].page_content)
 
     log.success("Creation of chunks completed.")
 
@@ -118,20 +102,12 @@ def markdown_split_docs_into_chunks(documents: list[Document]):
 
 # Split the docs into chunks
 def semantic_split_docs_into_chunks(documents: list[Document]):
-    # Get the proxy client for the AI Core service
-    proxy_client = get_proxy_client("gen-ai-hub")
-    # Create the OpenAIEmbeddings object
-    embeddings = OpenAIEmbeddings(
-        proxy_model_name="text-embedding-ada-002", proxy_client=proxy_client
-    )
-    embed_model = LangchainEmbedding(embeddings)
+    # Create the embeddings object
+    _, embeddings, _ = setup_components("DUMMY")
 
-    splitter = SemanticSplitterNodeParser(
-        buffer_size=1, breakpoint_percentile_threshold=95, embed_model=embed_model
-    )
+    text_splitter = SemanticChunker(embeddings)
 
-    nodes = splitter.get_nodes_from_documents(documents)
+    chunks = text_splitter.split_documents(documents)
+    log.info(f"Split {len(documents)} documents into {len(chunks)} chunks.")
 
-    log.info(f"Split {len(documents)} documents into {len(nodes)} chunks.")
-
-    return nodes
+    return chunks

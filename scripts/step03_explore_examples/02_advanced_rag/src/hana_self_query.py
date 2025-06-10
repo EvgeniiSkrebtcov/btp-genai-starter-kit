@@ -10,8 +10,7 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
 )
 from langchain.retrievers.self_query.base import SelfQueryRetriever
-from langchain_community.query_constructors.hanavector import HanaTranslator
-from utils.env import init_env
+from langchain_hana.query_constructors import HanaTranslator
 
 log = logging.getLogger(__name__)
 
@@ -139,5 +138,3 @@ def qa_documents_with_filters(db, llm, question, advanced_db_filter=None):
         log.info(f"Result: {result['result']}")
     except Exception as e:
         log.error(f"Error during QA chain execution: {str(e)}")
-
-
